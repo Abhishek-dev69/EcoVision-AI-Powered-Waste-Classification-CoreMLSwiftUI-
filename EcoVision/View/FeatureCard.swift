@@ -7,74 +7,106 @@ struct FeatureCard: View {
     let gradient: [Color]
     let icon: String
 
-    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.colorScheme) private var colorScheme
+
+    // MARK: Adaptive Gradient
+    private var adaptiveGradient: [Color] {
+
+        if colorScheme == .dark {
+
+            // Dark mode → uniform premium glass gradient
+            return [
+                Color.white.opacity(0.05),
+                Color.white.opacity(0.02)
+            ]
+
+        } else {
+
+            // Light mode → original colorful gradients
+            return gradient
+        }
+    }
 
     var body: some View {
 
         ZStack {
 
-            // Base pastel gradient
+            // MARK: Adaptive Base Gradient
             LinearGradient(
-                colors: gradient,
+                colors: adaptiveGradient,
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
 
-            // Glass overlay
-            LinearGradient(
-                colors: [
-                    Color.white.opacity(colorScheme == .dark ? 0.06 : 0.25),
-                    Color.white.opacity(colorScheme == .dark ? 0.02 : 0.08)
-                ],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            // MARK: Glass Layer
+            RoundedRectangle(cornerRadius: 28)
+                .fill(
+                    LinearGradient(
+                        colors: colorScheme == .dark
+                        ? [
+                            Color.white.opacity(0.08),
+                            Color.white.opacity(0.02)
+                        ]
+                        : [
+                            Color.white.opacity(0.6),
+                            Color.white.opacity(0.15)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
 
+            // MARK: Content
             HStack {
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: 6) {
 
                     Text(title)
-                        .font(.system(size: 26, weight: .medium))
+                        .font(.system(size: 26, weight: .semibold))
                         .foregroundColor(
-                            colorScheme == .dark ?
-                            Color.white.opacity(0.9) :
-                            Color.black.opacity(0.65)
+                            colorScheme == .dark
+                            ? Color.white
+                            : Color.black.opacity(0.75)
                         )
 
                     Text(subtitle)
-                        .font(.system(size: 15))
+                        .font(.system(size: 15, weight: .medium))
                         .foregroundColor(
-                            colorScheme == .dark ?
-                            Color.white.opacity(0.55) :
-                            Color.black.opacity(0.45)
+                            colorScheme == .dark
+                            ? Color.white.opacity(0.65)
+                            : Color.black.opacity(0.55)
                         )
                 }
 
                 Spacer()
 
-                // Icon Circle
+                // MARK: Icon
                 ZStack {
 
                     Circle()
                         .fill(
-                            Color.white.opacity(colorScheme == .dark ? 0.08 : 0.35)
+                            colorScheme == .dark
+                            ? Color.white.opacity(0.08)
+                            : Color.white.opacity(0.7)
                         )
+                        .background(.ultraThinMaterial)
                         .frame(width: 64, height: 64)
 
                     Circle()
                         .stroke(
-                            Color.white.opacity(0.4),
+                            colorScheme == .dark
+                            ? Color.white.opacity(0.15)
+                            : Color.white.opacity(0.9),
                             lineWidth: 1
                         )
                         .frame(width: 64, height: 64)
 
                     Image(systemName: icon)
-                        .font(.system(size: 22, weight: .medium))
+                        .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(
-                            colorScheme == .dark ?
-                            Color.white.opacity(0.85) :
-                            Color.black.opacity(0.6)
+                            colorScheme == .dark
+                            ? Color.white
+                            : Color.black.opacity(0.7)
                         )
                 }
             }
@@ -82,22 +114,26 @@ struct FeatureCard: View {
             .padding(.vertical, 20)
         }
         .frame(height: 130)
-        .cornerRadius(28)
+        .clipShape(RoundedRectangle(cornerRadius: 28))
 
-        // Thin elegant border
+        // MARK: Border
         .overlay(
             RoundedRectangle(cornerRadius: 28)
                 .stroke(
-                    Color.white.opacity(colorScheme == .dark ? 0.08 : 0.5),
+                    colorScheme == .dark
+                    ? Color.white.opacity(0.12)
+                    : Color.white.opacity(0.9),
                     lineWidth: 1
                 )
         )
 
-        // Soft shadow
+        // MARK: Shadow
         .shadow(
-            color: Color.black.opacity(colorScheme == .dark ? 0.5 : 0.12),
-            radius: 18,
-            y: 10
+            color: colorScheme == .dark
+            ? Color.black.opacity(0.6)
+            : Color.black.opacity(0.15),
+            radius: colorScheme == .dark ? 20 : 12,
+            y: 8
         )
     }
 }
