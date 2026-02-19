@@ -1,8 +1,3 @@
-//
-//  CameraView.swift
-//  EcoVision
-//
-
 import SwiftUI
 import PhotosUI
 
@@ -21,11 +16,17 @@ struct CameraView: View {
 
         ZStack {
 
-            // MARK: Layered Premium Background
+            // MARK: Premium Adaptive Background
             ZStack {
 
                 LinearGradient(
-                    colors: [
+                    colors: colorScheme == .dark ?
+                    [
+                        Color.black,
+                        Color(red: 0.05, green: 0.10, blue: 0.20)
+                    ]
+                    :
+                    [
                         Color(red: 0.93, green: 0.96, blue: 0.95),
                         Color(red: 0.82, green: 0.88, blue: 0.85)
                     ],
@@ -34,7 +35,13 @@ struct CameraView: View {
                 )
 
                 RadialGradient(
-                    colors: [
+                    colors: colorScheme == .dark ?
+                    [
+                        Color.blue.opacity(0.25),
+                        Color.clear
+                    ]
+                    :
+                    [
                         Color.green.opacity(0.18),
                         Color.clear
                     ],
@@ -57,12 +64,18 @@ struct CameraView: View {
                         ZStack {
 
                             Circle()
-                                .fill(Color.white.opacity(0.55))
+                                .fill(
+                                    colorScheme == .dark ?
+                                    Color.white.opacity(0.1) :
+                                    Color.white.opacity(0.6)
+                                )
                                 .frame(width: 44, height: 44)
 
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(.black.opacity(0.75))
+                                .foregroundColor(
+                                    colorScheme == .dark ? .white : .black
+                                )
                         }
                     }
 
@@ -71,7 +84,11 @@ struct CameraView: View {
                     Text("ECOVISION")
                         .font(.system(size: 18, weight: .semibold))
                         .kerning(4)
-                        .foregroundColor(.black.opacity(0.65))
+                        .foregroundColor(
+                            colorScheme == .dark ?
+                            Color.white.opacity(0.9) :
+                            Color.black.opacity(0.7)
+                        )
 
                     Spacer()
 
@@ -87,18 +104,14 @@ struct CameraView: View {
                 // MARK: Cards
                 VStack(spacing: 24) {
 
-                    // Pick Image
-                    PhotosPicker(
-                        selection: $selectedItem,
-                        matching: .images
-                    ) {
+                    PhotosPicker(selection: $selectedItem, matching: .images) {
 
                         FeatureCard(
                             title: "Pick Image",
                             subtitle: "Upload from gallery",
                             gradient: [
-                                Color(red: 0.35, green: 0.60, blue: 0.95),
-                                Color(red: 0.40, green: 0.75, blue: 0.85)
+                                Color.blue,
+                                Color.cyan
                             ],
                             icon: "photo"
                         )
@@ -115,37 +128,31 @@ struct CameraView: View {
                         }
                     }
 
-                    // Scan Image
                     Button {
-
                         showScanCamera = true
-
                     } label: {
 
                         FeatureCard(
                             title: "Scan Image",
                             subtitle: "Capture trash directly",
                             gradient: [
-                                Color(red: 0.45, green: 0.75, blue: 0.45),
-                                Color(red: 0.40, green: 0.75, blue: 0.65)
+                                Color.green,
+                                Color.mint
                             ],
                             icon: "viewfinder"
                         )
                     }
 
-                    // Live Detection
                     Button {
-
                         showLiveCamera = true
-
                     } label: {
 
                         FeatureCard(
                             title: "Live Detection",
                             subtitle: "Real-time analysis",
                             gradient: [
-                                Color(red: 0.95, green: 0.60, blue: 0.30),
-                                Color(red: 0.95, green: 0.80, blue: 0.30)
+                                Color.orange,
+                                Color.yellow
                             ],
                             icon: "camera.viewfinder"
                         )
@@ -164,7 +171,6 @@ struct CameraView: View {
         }
         .navigationBarHidden(true)
 
-        // Scan Camera Sheet
         .sheet(isPresented: $showScanCamera) {
 
             CameraCaptureView { image in
@@ -172,7 +178,6 @@ struct CameraView: View {
             }
         }
 
-        // Live Detection Sheet
         .sheet(isPresented: $showLiveCamera) {
 
             ZStack {
@@ -189,8 +194,14 @@ struct CameraView: View {
                             .font(.title3)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 12)
-                            .background(Color.black.opacity(0.75))
-                            .foregroundColor(.white)
+                            .background(
+                                colorScheme == .dark ?
+                                Color.black.opacity(0.75) :
+                                Color.white.opacity(0.85)
+                            )
+                            .foregroundColor(
+                                colorScheme == .dark ? .white : .black
+                            )
                             .cornerRadius(20)
                             .padding(.bottom, 40)
                     }
