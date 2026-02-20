@@ -16,17 +16,16 @@ struct CameraView: View {
 
         ZStack {
 
-            // MARK: Premium Adaptive Background
+            // MARK: Eco Premium Background (Same as ContentView)
             ZStack {
 
                 LinearGradient(
-                    colors: colorScheme == .dark ?
-                    [
+                    colors: colorScheme == .dark
+                    ? [
                         Color.black,
-                        Color(red: 0.05, green: 0.10, blue: 0.20)
+                        Color(red: 0.04, green: 0.08, blue: 0.15)
                     ]
-                    :
-                    [
+                    : [
                         Color(red: 0.93, green: 0.96, blue: 0.95),
                         Color(red: 0.82, green: 0.88, blue: 0.85)
                     ],
@@ -35,14 +34,8 @@ struct CameraView: View {
                 )
 
                 RadialGradient(
-                    colors: colorScheme == .dark ?
-                    [
-                        Color.blue.opacity(0.25),
-                        Color.clear
-                    ]
-                    :
-                    [
-                        Color.green.opacity(0.18),
+                    colors: [
+                        Color.green.opacity(colorScheme == .dark ? 0.30 : 0.18),
                         Color.clear
                     ],
                     center: .topTrailing,
@@ -62,7 +55,6 @@ struct CameraView: View {
                     } label: {
 
                         ZStack {
-
                             Circle()
                                 .fill(
                                     colorScheme == .dark ?
@@ -109,20 +101,14 @@ struct CameraView: View {
                         FeatureCard(
                             title: "Pick Image",
                             subtitle: "Upload from gallery",
-                            gradient: [
-                                Color.blue,
-                                Color.cyan
-                            ],
                             icon: "photo"
                         )
                     }
                     .onChange(of: selectedItem) { newItem in
 
                         Task {
-
                             if let data = try? await newItem?.loadTransferable(type: Data.self),
                                let image = UIImage(data: data) {
-
                                 vm.classifyImage(image)
                             }
                         }
@@ -135,10 +121,6 @@ struct CameraView: View {
                         FeatureCard(
                             title: "Scan Image",
                             subtitle: "Capture trash directly",
-                            gradient: [
-                                Color.green,
-                                Color.mint
-                            ],
                             icon: "viewfinder"
                         )
                     }
@@ -150,10 +132,6 @@ struct CameraView: View {
                         FeatureCard(
                             title: "Live Detection",
                             subtitle: "Real-time analysis",
-                            gradient: [
-                                Color.orange,
-                                Color.yellow
-                            ],
                             icon: "camera.viewfinder"
                         )
                     }
